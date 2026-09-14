@@ -20,6 +20,7 @@ namespace Test.UnitTests.DataAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            options.StopNextDispose();
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
             {
                 //ATTEMPT
@@ -34,6 +35,7 @@ namespace Test.UnitTests.DataAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            options.StopNextDispose();
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
             {
                 context.Database.EnsureCreated();
@@ -61,6 +63,7 @@ namespace Test.UnitTests.DataAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            options.StopNextDispose();
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
             {
                 context.Database.EnsureCreated();
@@ -87,6 +90,7 @@ namespace Test.UnitTests.DataAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            options.StopNextDispose();
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
             {
                 context.Database.EnsureCreated();
@@ -118,6 +122,7 @@ namespace Test.UnitTests.DataAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            options.StopNextDispose();
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
             {
                 context.Database.EnsureCreated();
@@ -150,6 +155,7 @@ namespace Test.UnitTests.DataAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            options.StopNextDispose();
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(null)))
             {
                 context.Database.EnsureCreated();

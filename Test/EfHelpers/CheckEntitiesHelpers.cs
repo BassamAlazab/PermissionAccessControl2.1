@@ -2,6 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DataKeyParts;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace Test.EfHelpers
         {
             foreach (var entityType in entityTypes)
             {
-                if (entityType.GetQueryFilter() == null
+                if (!entityType.GetDeclaredQueryFilters().Any()
                     && entityType.BaseType == null //not a TPH subclass
                     && entityType.ClrType.GetCustomAttribute<OwnedAttribute>() == null //not an owned type
                     && entityType.ClrType.GetCustomAttribute<NoQueryFilterNeeded>() == null) //Not marked as global

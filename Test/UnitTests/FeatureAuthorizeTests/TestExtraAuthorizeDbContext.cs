@@ -22,6 +22,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeAuthChanges = new FakeAuthChanges();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
+            options.StopNextDispose();
             using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChanges))
             {
                 context.Database.EnsureCreated();
@@ -42,6 +43,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeAuthChanges = new FakeAuthChanges();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
+            options.StopNextDispose();
             using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChanges))
             {
                 context.Database.EnsureCreated();
@@ -66,6 +68,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeAuthChanges = new FakeAuthChanges();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
+            options.StopNextDispose();
             using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChanges))
             {
                 context.Database.EnsureCreated();
@@ -96,6 +99,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeAuthChanges = new FakeAuthChanges();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
+            options.StopNextDispose();
             using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChanges))
             {
                 context.Database.EnsureCreated();

@@ -31,7 +31,8 @@ namespace DataLayer.EfCode.Configurations
             modelBuilder.Entity<UserToRole>().HasKey(x => new { x.UserId, x.RoleName });
 
             modelBuilder.Entity<RoleToPermissions>()
-                .Property("_permissionsInRole")
+                .Property<string>("_permissionsInRole")
+                .HasField("_permissionsInRole")
                 .HasColumnName("PermissionsInRole");
         }
 
@@ -44,7 +45,12 @@ namespace DataLayer.EfCode.Configurations
 
         private static void AddHierarchicalQueryFilter<T>(EntityTypeBuilder<T> builder, CompanyDbContext context) where T : class, IDataKey
         {
-            builder.HasQueryFilter(x => x.DataKey.StartsWith(context.DataKey));
+            // CombinedDbContext passes a null context when EnsureCreated builds the schema.
+            // Skip the filter in that case so the model can still be created.
+            if (context != null)
+            {
+                builder.HasQueryFilter(x => x.DataKey.StartsWith(context.DataKey));
+            }
             builder.HasIndex(x => x.DataKey);
         }
     }

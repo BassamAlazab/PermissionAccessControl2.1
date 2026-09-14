@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses.Support;
-using GenericServices;
 using StatusGeneric;
 
 namespace DataLayer.ExtraAuthClasses

@@ -11,7 +11,7 @@ using DataLayer.MultiTenantClasses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
+using System.Text.Json;
 using ServiceLayer.UserServices;
 
 [assembly: InternalsVisibleTo("Test")]
@@ -39,7 +39,8 @@ namespace PermissionAccessControl2.SeedDemo.Internal
         public async Task CheckAddDemoUsersAsync(string usersJson)
         {
             var allOutlets = _extraContext.Tenants.IgnoreQueryFilters().OfType<RetailOutlet>().ToList();
-            foreach (var userSpec in JsonConvert.DeserializeObject<List<UserJson>>(usersJson))
+            foreach (var userSpec in JsonSerializer.Deserialize<List<UserJson>>(usersJson,
+                         new JsonSerializerOptions { ReadCommentHandling = JsonCommentHandling.Skip }))
             {
                 if (userSpec.LinkedTenant.StartsWith("*"))
                 {

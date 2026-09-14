@@ -17,7 +17,7 @@ using PermissionAccessControl2.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using ServiceLayer.AppStart;
 using ServiceLayer.UserServices;
 using UserImpersonation.AppStart;
@@ -50,6 +50,8 @@ namespace PermissionAccessControl2
                     //I turn off confirmed account for the demo.
                     options => options.SignIn.RequireConfirmedAccount = false) //!!!!!!!!!!!!!!!!!!!!!! Turned off
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddHttpContextAccessor();
             services.AddControllersWithViews();
             services.AddRazorPages();
 
@@ -78,7 +80,7 @@ namespace PermissionAccessControl2
             //I add Swagger so that you can test the FrontEndController that provides the permissions of the current user
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API V1", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API V1", Version = "1.0.0" });
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml#xml-comments
                 // Set the comments path for the Swagger JSON and UI.
