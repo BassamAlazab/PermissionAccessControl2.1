@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
+    <ProjectReference Include="..\ScopeAuthorize\ScopeAuthorize.csproj" />
   </ItemGroup>
 
 </Project>

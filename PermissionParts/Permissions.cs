@@ -38,6 +38,12 @@ namespace PermissionParts
         RoleRead = 50,
         [Display(GroupName = "UserAdmin", Name = "Change Role", Description = "Can create, update or delete a Role")]
         RoleChange = 51,
+        [Display(GroupName = "UserAdmin", Name = "Read assignments", Description = "Can list scoped role assignments")]
+        AssignmentRead = 52,
+        [Display(GroupName = "UserAdmin", Name = "Change assignments", Description = "Can create or delete scoped role assignments")]
+        AssignmentChange = 53,
+        [Display(GroupName = "UserAdmin", Name = "Delegate assignments", Description = "Can delegate a subset of own scoped permissions")]
+        AssignmentDelegate = 54,
 
         [Display(GroupName = "CacheTest", Name = "Cache1", Description = "Base permission to update permission test")]
         Cache1 = 60,

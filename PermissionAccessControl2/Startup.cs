@@ -20,6 +20,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi;
 using ServiceLayer.AppStart;
 using ServiceLayer.UserServices;
+using ScopeAuthorize;
 using UserImpersonation.AppStart;
 
 namespace PermissionAccessControl2
@@ -64,6 +65,7 @@ namespace PermissionAccessControl2
 
             //This is needed to implement the data authorize code 
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
+            services.AddScoped<IAuthorizationEngine, AuthorizationEngine>();
 
             //This registers/sets up the services in these projects. 
             services.ServiceLayerRegister();

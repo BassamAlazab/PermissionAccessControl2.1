@@ -1,0 +1,43 @@
+@model IReadOnlyList<ServiceLayer.UserServices.EffectiveNodeAccessDto>
+@{
+    ViewData["Title"] = "Effective permissions";
+}
+
+<h2>Effective permissions debugger</h2>
+<p>User id: @ViewBag.UserId</p>
+<form method="get" class="form-inline mb-3">
+    <input class="form-control mr-2" name="userId" value="@ViewBag.UserId" placeholder="User id" />
+    <button class="btn btn-outline-secondary" type="submit">Show</button>
+</form>
+
+@if (string.IsNullOrEmpty(ViewBag.UserId as string))
+{
+    <p>Enter a user id to see which permissions apply on each tenant node.</p>
+}
+else
+{
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th>Node</th>
+            <th>Type</th>
+            <th>Permissions</th>
+            <th>Why</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var node in Model)
+        {
+            <tr>
+                <td>
+                    @for (var i = 0; i < node.Indent; i++) { <text>&nbsp;&nbsp;&nbsp;</text> }
+                    @node.Name
+                </td>
+                <td>@node.TenantType</td>
+                <td>@string.Join(", ", node.AllowedPermissions)</td>
+                <td>@string.Join("; ", node.MatchingAssignments)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

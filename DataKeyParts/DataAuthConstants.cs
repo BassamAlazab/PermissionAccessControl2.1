@@ -9,5 +9,8 @@ namespace DataKeyParts
         public const int AccessKeySize = 64;
 
         public const string HierarchicalKeyClaimName = "DataKey";
+        public const string BypassTenantFilterClaimName = "BypassTenantFilter";
+        public const string AllowedTenantKeysClaimName = "AllowedTenantKeys";
+        public const string AllowedOwnedDataKeysClaimName = "AllowedOwnedDataKeys";
     }
 }

@@ -55,6 +55,7 @@
     <ProjectReference Include="..\PermissionAccessControl2\PermissionAccessControl2.csproj" />
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
     <ProjectReference Include="..\RefreshClaimsParts\RefreshClaimsParts.csproj" />
+    <ProjectReference Include="..\ScopeAuthorize\ScopeAuthorize.csproj" />
     <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj" />
     <ProjectReference Include="..\UserImpersonation\UserImpersonation.csproj" />
   </ItemGroup>

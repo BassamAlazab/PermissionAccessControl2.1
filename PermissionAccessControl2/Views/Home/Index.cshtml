@@ -48,6 +48,8 @@
         </li>
         <li>When log in you can see your claims, permissions and other user/role ifo via the "Users" menu button.</li>
         <li>Also look at <a asp-area="" asp-controller="Company" asp-action="Index">Company</a> for a list of the hierarchical data.</li>
+        <li>Try scoped RBAC: log in as <strong>structure@4U.com</strong> (company node only, no shop stock), <strong>sfShops@4U.com</strong> (direct child shops of San Fran), or <strong>dirNoSF@4U.com</strong> (whole company except SF Dress4U).</li>
+        <li>SuperAdmin can open <a asp-area="" asp-controller="Assignments" asp-action="Index">Scoped assignments</a> and the effective-permissions debugger.</li>
         <li>To test refresh of users permissions go to <a asp-area="" asp-controller="Cache" asp-action="Index">Toggle Role</a> to see this in action. <i>NOTE: UpdateCookieOnChange must be set to true in appsettings.json</i></li>
         <li>To test user impersonation feature log in as the SuperAdmin user go to <a asp-area="" asp-controller="Impersonate" asp-action="Index">Impersonation->Pick User</a> to see this in action. <i>NOTE: UpdateCookieOnChange must be set to true in appsettings.json</i></li>
     </ol>

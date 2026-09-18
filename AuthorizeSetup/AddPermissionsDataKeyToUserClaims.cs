@@ -4,11 +4,11 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DataAuthorize;
-using DataKeyParts;
 using DataLayer.EfCode;
 using FeatureAuthorize;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using ScopeAuthorize;
 
 namespace AuthorizeSetup
 {
@@ -36,7 +36,8 @@ namespace AuthorizeSetup
             var rtoPCalcer = new CalcAllowedPermissions(_extraAuthDbContext);
             identity.AddClaim(new Claim(PermissionConstants.PackedPermissionClaimType, await rtoPCalcer.CalcPermissionsForUserAsync(userId)));
             var dataKeyCalcer = new CalcDataKey(_extraAuthDbContext);
-            identity.AddClaim(new Claim(DataAuthConstants.HierarchicalKeyClaimName, dataKeyCalcer.CalcDataKeyForUser(userId)));
+            foreach (var claim in DataScopeClaimBuilder.BuildClaims(dataKeyCalcer.CalcDataScopeForUser(userId)))
+                identity.AddClaim(claim);
             return identity;
         }
     }

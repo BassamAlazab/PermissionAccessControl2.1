@@ -84,14 +84,23 @@ namespace DataLayer.ExtraAuthClasses
                 return status.AddError("That role doesn't exists");
 
             var usersWithRoles = context.UserToRoles.Where(x => x.RoleName == roleName).ToList();
-            if (usersWithRoles.Any())
+            var assignments = context.RoleAssignments.Where(x => x.RoleName == roleName).ToList();
+            if (usersWithRoles.Any() || assignments.Any())
             {
                 if (!removeFromUsers)
-                    return status.AddError($"That role is used by {usersWithRoles.Count} and you didn't ask for them to be updated.");
+                    return status.AddError($"That role is used by {usersWithRoles.Count} user(s) and {assignments.Count} assignment(s) and you didn't ask for them to be updated.");
 
                 context.RemoveRange(usersWithRoles);
-                status.Message = $"Removed role from {usersWithRoles.Count} user and then deleted role successfully.";
+                context.RemoveRange(assignments);
+                status.Message = $"Removed role from {usersWithRoles.Count} user(s) and {assignments.Count} assignment(s) and then deleted role successfully.";
             }
+
+            var hierarchies = context.RoleHierarchies
+                .Where(x => x.ParentRoleName == roleName || x.ChildRoleName == roleName).ToList();
+            var conflicts = context.RoleConflicts
+                .Where(x => x.RoleNameA == roleName || x.RoleNameB == roleName).ToList();
+            context.RemoveRange(hierarchies);
+            context.RemoveRange(conflicts);
 
             context.Remove(roleToUpdate);
             return status;

@@ -11,6 +11,7 @@ using DataLayer.EfCode;
 using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection;
+using ScopeAuthorize;
 
 namespace AuthorizeSetup
 {
@@ -37,9 +38,8 @@ namespace AuthorizeSetup
             //Now calculate the Permissions Claim value and add it
             claims.Add(new Claim(PermissionConstants.PackedPermissionClaimType,
                 await rtoPCalcer.CalcPermissionsForUserAsync(userId)));
-            //and the same for the DataKey
-            claims.Add(new Claim(DataAuthConstants.HierarchicalKeyClaimName,
-                dataKeyCalc.CalcDataKeyForUser(userId)));
+            //and the same for the DataKey / scoped data filter
+            claims.AddRange(DataScopeClaimBuilder.BuildClaims(dataKeyCalc.CalcDataScopeForUser(userId)));
 
             //Build a new ClaimsPrincipal and use it to replace the current ClaimsPrincipal
             var identity = new ClaimsIdentity(claims, "Cookie");

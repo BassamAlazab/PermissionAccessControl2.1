@@ -1,0 +1,64 @@
+@model IReadOnlyList<DataLayer.ExtraAuthClasses.RoleAssignment>
+@using System.Linq
+@using DataLayer.ExtraAuthClasses
+@{
+    ViewData["Title"] = "Scoped assignments";
+}
+
+<h2>Scoped role assignments</h2>
+<p>
+    Each assignment binds a role to a tenant node with a depth (how far it inherits) and a reach (node only vs owned shop data).
+</p>
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create assignment</a>
+    <a class="btn btn-secondary" asp-action="Effective" asp-route-userId="@ViewBag.FilterUserId">Effective permissions debugger</a>
+</p>
+
+<form method="get" class="form-inline mb-3">
+    <input class="form-control mr-2" name="userId" value="@ViewBag.FilterUserId" placeholder="Filter by user id" />
+    <button class="btn btn-outline-secondary" type="submit">Filter</button>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>User</th>
+        <th>Role</th>
+        <th>Scope</th>
+        <th>Depth</th>
+        <th>Reach</th>
+        <th>Effect</th>
+        <th>JIT window</th>
+        <th>Delegated</th>
+        <th>Exclusions</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr class="@(item.Effect == AssignmentEffect.Deny ? "table-danger" : null)">
+            <td>@item.UserId</td>
+            <td>@item.RoleName</td>
+            <td>@item.ScopeTenant?.Name</td>
+            <td>@item.ScopeDepth</td>
+            <td>@item.ResourceReach</td>
+            <td>@item.Effect</td>
+            <td>
+                @item.ValidFrom?.ToString("u")
+                @if (item.ValidFrom != null || item.ValidTo != null) { <text>→</text> }
+                @item.ValidTo?.ToString("u")
+            </td>
+            <td>@(item.IsDelegated ? "yes" : "")</td>
+            <td>@string.Join(", ", item.Exclusions.Select(x => x.ExcludedTenant?.Name))</td>
+            <td>
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@item.RoleAssignmentId" />
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

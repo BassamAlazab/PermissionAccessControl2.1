@@ -20,6 +20,10 @@ namespace DataLayer.EfCode
         public DbSet<UserToRole> UserToRoles { get; set; }
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
         public DbSet<ModulesForUser> ModulesForUsers { get; set; }
+        public DbSet<RoleAssignment> RoleAssignments { get; set; }
+        public DbSet<AssignmentExclusion> AssignmentExclusions { get; set; }
+        public DbSet<RoleHierarchy> RoleHierarchies { get; set; }
+        public DbSet<RoleConflict> RoleConflicts { get; set; }
 
         /// <summary>
         /// The TimeStore holds the time when a change is made to the Roles/Permission such that it might alter a user's permissions.

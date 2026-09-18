@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using DataLayer.MultiTenantClasses;
+using Microsoft.EntityFrameworkCore;
 using PermissionParts;
 
 [assembly: InternalsVisibleTo("Test")]
@@ -69,6 +71,65 @@ namespace ServiceLayer.UserServices
             if (status.IsValid)
                 //we assume there is already a link to the role is the status wasn't valid
                 _context.Add(status.Result);
+        }
+
+        /// <summary>
+        /// Adds a scoped role assignment if an identical one is not already present.
+        /// </summary>
+        public RoleAssignment CheckAddRoleAssignment(string userId, string roleName, TenantBase scopeTenant,
+            ScopeDepth scopeDepth = ScopeDepth.ThisAndEntireSubtree,
+            ResourceReach resourceReach = ResourceReach.OwnedData,
+            AssignmentEffect effect = AssignmentEffect.Allow,
+            string excludeTenantName = null)
+        {
+            var existing = _context.RoleAssignments
+                .FirstOrDefault(x => x.UserId == userId
+                                     && x.RoleName == roleName
+                                     && x.ScopeTenantId == scopeTenant.TenantItemId
+                                     && x.ScopeDepth == scopeDepth
+                                     && x.ResourceReach == resourceReach
+                                     && x.Effect == effect);
+            if (existing != null)
+                return existing;
+
+            var status = RoleAssignment.Create(userId, roleName, scopeTenant, scopeDepth, resourceReach, _context, effect);
+            if (!status.IsValid)
+                throw new InvalidOperationException(status.GetAllErrors());
+
+            if (!string.IsNullOrEmpty(excludeTenantName))
+            {
+                var excluded = _context.Tenants.IgnoreQueryFilters().SingleOrDefault(x => x.Name == excludeTenantName);
+                if (excluded == null)
+                    throw new InvalidOperationException($"Could not find tenant '{excludeTenantName}' to exclude.");
+                status.Result.AddExclusion(excluded);
+            }
+
+            _context.Add(status.Result);
+            return status.Result;
+        }
+
+        public void CheckAddRoleHierarchy(string parentRoleName, string childRoleName)
+        {
+            var existing = _context.Find<RoleHierarchy>(parentRoleName, childRoleName);
+            if (existing != null)
+                return;
+            var parent = _context.Find<RoleToPermissions>(parentRoleName);
+            var child = _context.Find<RoleToPermissions>(childRoleName);
+            if (parent == null || child == null)
+                throw new InvalidOperationException($"Could not find roles '{parentRoleName}' and/or '{childRoleName}'.");
+            _context.Add(new RoleHierarchy(parent, child));
+        }
+
+        public void CheckAddRoleConflict(string roleNameA, string roleNameB)
+        {
+            var roleA = _context.Find<RoleToPermissions>(roleNameA);
+            var roleB = _context.Find<RoleToPermissions>(roleNameB);
+            if (roleA == null || roleB == null)
+                throw new InvalidOperationException($"Could not find roles '{roleNameA}' and/or '{roleNameB}'.");
+            var conflict = new RoleConflict(roleA, roleB);
+            if (_context.Find<RoleConflict>(conflict.RoleNameA, conflict.RoleNameB) != null)
+                return;
+            _context.Add(conflict);
         }
 
         /// <summary>

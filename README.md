@@ -23,9 +23,10 @@ You start the PermissionAccessControl2 project to run the ASP.NET Core applicati
 The default setting (see Configuration section below) will use in-memory databases which it will preload with demo users and data at startup (NOTE: Its a bit slow to start as it is setting up all the demo users and data). The demo users have:
 
 1. Different **Permissions**, which controls what they can do, e.g. only a StoreManager can provide a refund.
-2. Different **DataKey**, which controls what part of the shop data they can see, e.g. a SalesAssistant and StoreManager can only see the data in their shop, but a Director can see all shop data in the company.
+2. Different **DataKey** / **scoped role assignments**, which control what part of the shop data they can see. Assignments can be limited to a node (`ThisOnly`), its direct children, or the whole subtree, and can apply to the organisational node only (`ContainerOnly`) or include shop stock/sales (`OwnedData`). SuperAdmin bypasses tenant scope.
 3. There is **Refresh Claims** menu dropdown which allows you to try the "refreshing claims" feature described in the [Part 5 article](https://www.thereformedprogrammer.net/part-5-a-better-way-to-handle-authorization-refreshing-users-claims/).
 4. There is a **Impersonation**  menu dropdown which allows you to try the "user impersonation" feature described in the [Part 6 article](#).
+5. SuperAdmin (and users with assignment permissions) can open **Scoped assignments** and the **Effective permissions** debugger.
 
 There is a link on the home page to a list of users that you can log in via (the email address is also the password). There are two different companies, 4U Inc. and Pets2 Ltd., which have a number of shops in different divisions, represented by hierarchical data. Logging in as a user will give you access to some features and data (if linked to data).
 

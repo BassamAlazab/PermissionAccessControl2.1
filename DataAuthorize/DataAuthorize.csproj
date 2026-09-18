@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\ScopeAuthorize\ScopeAuthorize.csproj" />
   </ItemGroup>
 
 </Project>

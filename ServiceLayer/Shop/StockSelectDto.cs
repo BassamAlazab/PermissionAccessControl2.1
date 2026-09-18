@@ -15,6 +15,8 @@ namespace ServiceLayer.Shop
 
         public int TenantItemId { get; set; }
 
+        public string DataKey { get; set; }
+
         public string DisplayText => $"{Name}, {RetailPrice:C} ({NumInStock} left)";
     }
 }

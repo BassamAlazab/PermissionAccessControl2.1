@@ -14,5 +14,7 @@ namespace ServiceLayer.Shop
         public int NumInStock { get; set; }
 
         public string ShopName { get; set; }
+
+        public string DataKey { get; set; }
     }
 }

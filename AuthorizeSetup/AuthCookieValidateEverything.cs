@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using RefreshClaimsParts;
+using ScopeAuthorize;
 using UserImpersonation.Concrete;
 
 namespace AuthorizeSetup
@@ -93,11 +94,7 @@ namespace AuthorizeSetup
 
         private List<Claim> BuildDataClaims(string userId, CalcDataKey dataKeyCalc)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(DataAuthConstants.HierarchicalKeyClaimName, dataKeyCalc.CalcDataKeyForUser(userId))
-            };
-            return claims;
+            return DataScopeClaimBuilder.BuildClaims(dataKeyCalc.CalcDataScopeForUser(userId));
         }
     }
 }

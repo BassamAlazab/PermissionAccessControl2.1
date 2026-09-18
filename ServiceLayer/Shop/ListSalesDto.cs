@@ -25,5 +25,7 @@ namespace ServiceLayer.Shop
         public string ReturnReason { get; set; }
 
         public string StockItemShopName { get; set; }
+
+        public string DataKey { get; set; }
     }
 }

@@ -2,6 +2,8 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DataKeyParts;
@@ -14,6 +16,10 @@ namespace DataLayer.EfCode
     public class CompanyDbContext : DbContext
     {
         internal readonly string DataKey;
+        internal readonly bool BypassTenantFilter;
+        internal readonly bool UseLegacyDataKeyFilter;
+        internal readonly string[] AllowedTenantDataKeys;
+        internal readonly string[] AllowedOwnedDataKeys;
 
         public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<ShopStock> ShopStocks { get; set; }
@@ -25,19 +31,28 @@ namespace DataLayer.EfCode
             : base(options)
         {
             DataKey = claimsProvider.DataKey;
+            BypassTenantFilter = claimsProvider.BypassTenantFilter;
+            AllowedTenantDataKeys = claimsProvider.AllowedTenantDataKeys?.ToArray() ?? Array.Empty<string>();
+            AllowedOwnedDataKeys = claimsProvider.AllowedOwnedDataKeys?.ToArray() ?? Array.Empty<string>();
+            // Legacy tests and cookies only supply DataKey: keep StartsWith subtree filtering.
+            UseLegacyDataKeyFilter = !BypassTenantFilter
+                                     && claimsProvider.AllowedTenantDataKeys == null
+                                     && claimsProvider.AllowedOwnedDataKeys == null;
         }
 
         //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            this.MarkWithDataKeyIfNeeded(DataKey);
+            if (!BypassTenantFilter)
+                this.MarkWithDataKeyIfNeeded(DataKey);
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            this.MarkWithDataKeyIfNeeded(DataKey);
+            if (!BypassTenantFilter)
+                this.MarkWithDataKeyIfNeeded(DataKey);
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 

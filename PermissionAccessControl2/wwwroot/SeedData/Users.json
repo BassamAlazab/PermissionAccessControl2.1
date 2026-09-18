@@ -44,5 +44,25 @@
     "Email": "*Sales@Pets2.com",
     "RolesCommaDelimited": "SalesAssistant,CacheRole",
     "LinkedTenant": "*Place"
+  },
+  {
+    "Email": "structure@4U.com",
+    "RolesCommaDelimited": "Director,CacheRole",
+    "LinkedTenant": "4U Inc.",
+    "ScopeDepth": "ThisOnly",
+    "ResourceReach": "ContainerOnly"
+  },
+  {
+    "Email": "sfShops@4U.com",
+    "RolesCommaDelimited": "AreaManager,CacheRole",
+    "LinkedTenant": "San Fran",
+    "ScopeDepth": "DirectChildren",
+    "ResourceReach": "OwnedData"
+  },
+  {
+    "Email": "dirNoSF@4U.com",
+    "RolesCommaDelimited": "Director,CacheRole",
+    "LinkedTenant": "4U Inc.",
+    "ExcludeTenant": "SF Dress4U"
   }
 ]

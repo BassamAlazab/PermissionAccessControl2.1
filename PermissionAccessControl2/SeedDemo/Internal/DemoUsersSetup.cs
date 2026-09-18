@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
+using DataLayer.ExtraAuthClasses;
 using DataLayer.MultiTenantClasses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +49,7 @@ namespace PermissionAccessControl2.SeedDemo.Internal
                     foreach (var retailOutlet in allOutlets.Where(x => x.Name.EndsWith(userSpec.LinkedTenant.Substring(1))))
                     {
                         var email = retailOutlet.Name.Replace(' ', '-') + userSpec.Email.Substring(1);
-                        await CheckAddUser(email, userSpec.RolesCommaDelimited, retailOutlet);
+                        await CheckAddUser(email, userSpec.RolesCommaDelimited, retailOutlet, userSpec);
                     }
                 }
                 else
@@ -57,31 +58,64 @@ namespace PermissionAccessControl2.SeedDemo.Internal
                         .SingleOrDefault(x => x.Name == userSpec.LinkedTenant);
                     if (foundTenant == null)
                         throw new ApplicationException($"Could not find a tenant named {userSpec.LinkedTenant}.");
-                    await CheckAddUser(userSpec.Email, userSpec.RolesCommaDelimited, foundTenant);
+                    await CheckAddUser(userSpec.Email, userSpec.RolesCommaDelimited, foundTenant, userSpec);
                 }
             }
 
+            SeedScopedRbacExtras();
             _extraContext.SaveChanges();
         }
 
-        private async Task CheckAddUser(string email, string rolesCommaDelimited, TenantBase linkedTenant)
+        private async Task CheckAddUser(string email, string rolesCommaDelimited, TenantBase linkedTenant, UserJson spec)
         {
             var user = await _userManager.CheckAddNewUserAsync(email, email); //password is their email
+            var depth = ParseDepth(spec?.ScopeDepth);
+            var reach = ParseReach(spec?.ResourceReach);
+            var effect = ParseEffect(spec?.Effect);
             foreach (var roleName in rolesCommaDelimited.Split(',').Select(x => x.Trim()))
             {
                 _extraService.CheckAddRoleToUser(user.Id, roleName);
+                _extraService.CheckAddRoleAssignment(user.Id, roleName, linkedTenant, depth, reach, effect, spec?.ExcludeTenant);
             }
             _extraService.AddUpdateDataAccessHierarchical(user.Id, linkedTenant);
             _extraService.CheckAddModules(user.Id, linkedTenant);
         }
 
+        private void SeedScopedRbacExtras()
+        {
+            _extraService.CheckAddRoleConflict("StoreManager", "UserAdmin");
+        }
+
+        private static ScopeDepth ParseDepth(string value)
+        {
+            return Enum.TryParse<ScopeDepth>(value, true, out var parsed)
+                ? parsed
+                : ScopeDepth.ThisAndEntireSubtree;
+        }
+
+        private static ResourceReach ParseReach(string value)
+        {
+            return Enum.TryParse<ResourceReach>(value, true, out var parsed)
+                ? parsed
+                : ResourceReach.OwnedData;
+        }
+
+        private static AssignmentEffect ParseEffect(string value)
+        {
+            return Enum.TryParse<AssignmentEffect>(value, true, out var parsed)
+                ? parsed
+                : AssignmentEffect.Allow;
+        }
 
         private class UserJson
         {
             public string Email { get; set; }
             public string RolesCommaDelimited { get; set; }
             public string LinkedTenant { get; set; }
+            public string ScopeDepth { get; set; }
+            public string ResourceReach { get; set; }
+            public string Effect { get; set; }
+            public string ExcludeTenant { get; set; }
         }
-
     }
 }

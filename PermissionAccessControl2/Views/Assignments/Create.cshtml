@@ -1,0 +1,84 @@
+@model ServiceLayer.UserServices.CreateAssignmentRequest
+@using System
+@using System.Collections.Generic
+@using DataLayer.ExtraAuthClasses
+@{
+    ViewData["Title"] = "Create assignment";
+    var roles = ViewBag.Roles as List<RoleToPermissions>;
+    var tenants = ViewBag.Tenants as List<DataLayer.MultiTenantClasses.TenantBase>;
+}
+
+<h2>Create scoped assignment</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post">
+    <div class="form-group">
+        <label>User id</label>
+        <input class="form-control" asp-for="UserId" />
+    </div>
+    <div class="form-group">
+        <label>Role</label>
+        <select class="form-control" asp-for="RoleName">
+            @foreach (var role in roles ?? new List<RoleToPermissions>())
+            {
+                <option value="@role.RoleName">@role.RoleName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Scope tenant</label>
+        <select class="form-control" asp-for="ScopeTenantId">
+            @foreach (var tenant in tenants ?? new List<DataLayer.MultiTenantClasses.TenantBase>())
+            {
+                <option value="@tenant.TenantItemId">@tenant.GetType().Name - @tenant.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Scope depth</label>
+        <select class="form-control" asp-for="ScopeDepth">
+            @foreach (ScopeDepth depth in Enum.GetValues(typeof(ScopeDepth)))
+            {
+                <option value="@depth">@depth</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Resource reach</label>
+        <select class="form-control" asp-for="ResourceReach">
+            @foreach (ResourceReach reach in Enum.GetValues(typeof(ResourceReach)))
+            {
+                <option value="@reach">@reach</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Effect</label>
+        <select class="form-control" asp-for="Effect">
+            @foreach (AssignmentEffect effect in Enum.GetValues(typeof(AssignmentEffect)))
+            {
+                <option value="@effect">@effect</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Valid from (UTC, optional JIT)</label>
+        <input class="form-control" asp-for="ValidFrom" />
+    </div>
+    <div class="form-group">
+        <label>Valid to (UTC, optional JIT)</label>
+        <input class="form-control" asp-for="ValidTo" />
+    </div>
+    <div class="form-group">
+        <label>ABAC conditions JSON (optional)</label>
+        <textarea class="form-control" asp-for="ConditionsJson" rows="3" placeholder='{"fromTimeUtc":"08:00","toTimeUtc":"18:00"}'></textarea>
+    </div>
+    <div class="form-group">
+        <label>Exclude tenant id (optional)</label>
+        <input class="form-control" asp-for="ExcludeTenantId" />
+    </div>
+    <button class="btn btn-primary" type="submit">Create</button>
+    <button class="btn btn-outline-primary" type="submit" asp-action="Delegate">Delegate from my scope</button>
+    <a class="btn btn-link" asp-action="Index">Cancel</a>
+</form>

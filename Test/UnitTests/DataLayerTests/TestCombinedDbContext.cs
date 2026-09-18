@@ -43,7 +43,11 @@ namespace Test.UnitTests.DataLayerTests
                 }
                 classNames.ShouldEqual(new List<string>
                 {
+                    "DataLayer.ExtraAuthClasses.AssignmentExclusion",
                     "DataLayer.ExtraAuthClasses.ModulesForUser",
+                    "DataLayer.ExtraAuthClasses.RoleAssignment",
+                    "DataLayer.ExtraAuthClasses.RoleConflict",
+                    "DataLayer.ExtraAuthClasses.RoleHierarchy",
                     "DataLayer.ExtraAuthClasses.RoleToPermissions",
                     "DataLayer.ExtraAuthClasses.TimeStore",
                     "DataLayer.ExtraAuthClasses.UserDataHierarchical",
@@ -77,7 +81,11 @@ namespace Test.UnitTests.DataLayerTests
                 }
                 classNames.ShouldEqual(new List<string>
                 {
+                    "DataLayer.ExtraAuthClasses.AssignmentExclusion",
                     "DataLayer.ExtraAuthClasses.ModulesForUser",
+                    "DataLayer.ExtraAuthClasses.RoleAssignment",
+                    "DataLayer.ExtraAuthClasses.RoleConflict",
+                    "DataLayer.ExtraAuthClasses.RoleHierarchy",
                     "DataLayer.ExtraAuthClasses.RoleToPermissions",
                     "DataLayer.ExtraAuthClasses.TimeStore",
                     "DataLayer.ExtraAuthClasses.UserDataHierarchical",

@@ -12,17 +12,16 @@ using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.SeedDemo.Internal;
 using PermissionParts;
 using ServiceLayer.UserServices;
+using DataLayer.ExtraAuthClasses;
 
 namespace PermissionAccessControl2.SeedDemo
 {
     public static class SuperAdminSetup
     {
-        private const string SuperAdminRoleName = "SuperAdmin";
-
         /// <summary>
         /// This ensures there is a SuperAdmin user in the system.
         /// It gets the SuperAdmin's email and password from the "SuperAdmin" section of the appsettings.json file
-        /// NOTE: for security reasons I only allows one user with the RoleName of <see cref="SuperAdminRoleName"/> 
+        /// NOTE: for security reasons I only allows one user with the RoleName of SuperAdmin
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
@@ -32,7 +31,7 @@ namespace PermissionAccessControl2.SeedDemo
             {
                 var services = scope.ServiceProvider;
                 var extraContext = services.GetRequiredService<ExtraAuthorizeDbContext>();
-                if (extraContext.UserToRoles.Any(x => x.RoleName == SuperAdminRoleName))
+                if (extraContext.UserToRoles.Any(x => x.RoleName == ExtraAuthConstants.SuperAdminRoleName))
                     //For security reasons there can only be one user with the SuperAdminRoleName
                     return;
 
@@ -51,8 +50,8 @@ namespace PermissionAccessControl2.SeedDemo
                 using (var context = services.GetRequiredService<ExtraAuthorizeDbContext>())
                 {
                     var extraService = new ExtraAuthUsersSetup(context);
-                    extraService.AddUpdateRoleToPermissions(SuperAdminRoleName, "SuperAdmin Role", new List<Permissions>{ Permissions.AccessAll});
-                    extraService.CheckAddRoleToUser(superUser.Id, SuperAdminRoleName);
+                    extraService.AddUpdateRoleToPermissions(ExtraAuthConstants.SuperAdminRoleName, "SuperAdmin Role", new List<Permissions>{ Permissions.AccessAll});
+                    extraService.CheckAddRoleToUser(superUser.Id, ExtraAuthConstants.SuperAdminRoleName);
                     context.SaveChanges();
                 }
             }

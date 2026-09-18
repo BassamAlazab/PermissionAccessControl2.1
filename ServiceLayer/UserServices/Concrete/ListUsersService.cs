@@ -27,10 +27,16 @@ namespace ServiceLayer.UserServices.Concrete
             foreach (var user in _userManager.Users)
             {
                 var userRoleNames = _extraContext.UserToRoles.Where(x => x.UserId == user.Id).Select(x => x.RoleName);
+                var assignments = _extraContext.RoleAssignments
+                    .Where(x => x.UserId == user.Id)
+                    .Select(x => x.RoleName + "@" + x.ScopeTenant.Name + ":" + x.ScopeDepth)
+                    .ToList();
                 var dataEntry = _extraContext.Find<UserDataHierarchical>(user.Id);
                 string tenantName = "no linked tenant";
                 string companyName = null;
-                if (dataEntry != null)
+                if (assignments.Any())
+                    tenantName = string.Join(" | ", assignments);
+                else if (dataEntry != null)
                 {
                     var linkedTenant = _extraContext.Find<TenantBase>(dataEntry.LinkedTenantId);
                     tenantName = linkedTenant?.Name ?? "tenant not found";

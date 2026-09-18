@@ -7,5 +7,7 @@ namespace DataLayer.ExtraAuthClasses
         public const int UserIdSize = 36; //This is the size of a GUID when returned as a string
 
         public const int RoleNameSize = 100;
+
+        public const string SuperAdminRoleName = "SuperAdmin";
     }
 }

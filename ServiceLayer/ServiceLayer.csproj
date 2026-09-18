@@ -23,6 +23,7 @@
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\FeatureAuthorize\FeatureAuthorize.csproj" />
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
+    <ProjectReference Include="..\ScopeAuthorize\ScopeAuthorize.csproj" />
   </ItemGroup>
 
 </Project>

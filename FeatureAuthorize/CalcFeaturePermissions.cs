@@ -5,8 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
+using DataLayer.ExtraAuthClasses;
 using Microsoft.EntityFrameworkCore;
 using PermissionParts;
+using ScopeAuthorize;
 
 namespace FeatureAuthorize
 {
@@ -31,12 +33,22 @@ namespace FeatureAuthorize
         /// <returns>a string containing the packed permissions</returns>
         public async Task<string> CalcPermissionsForUserAsync(string userId)
         {
-            //This gets all the permissions, with a distinct to remove duplicates
-            var permissionsForUser = (await _context.UserToRoles.Where(x => x.UserId == userId)
-                .Select(x => x.Role.PermissionsInRole)
-                .ToListAsync())
-                //Because the permissions are packed we have to put these parts of the query after the ToListAsync()
-                .SelectMany(x => x).Distinct();
+            var roleNames = (await _context.UserToRoles.Where(x => x.UserId == userId)
+                    .Select(x => x.RoleName)
+                    .ToListAsync())
+                .Concat(await _context.RoleAssignments
+                    .Where(x => x.UserId == userId && x.Effect == AssignmentEffect.Allow)
+                    .Select(x => x.RoleName)
+                    .ToListAsync())
+                .Distinct()
+                .ToList();
+
+            var expandedRoleNames = RoleHierarchyExpander.ExpandRoleNames(_context, roleNames);
+            var permissionsForUser = _context.RolesToPermissions
+                .Where(x => expandedRoleNames.Contains(x.RoleName))
+                .ToList()
+                .SelectMany(x => x.PermissionsInRole)
+                .Distinct();
 
             //we get the modules this user is allowed to see
             var userModules = _context.ModulesForUsers.Find(userId)

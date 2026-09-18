@@ -18,6 +18,10 @@ namespace DataLayer.EfCode
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
         public DbSet<ModulesForUser> ModulesForUsers { get; set; }
         public DbSet<UserDataHierarchical> DataAccess { get; set; }
+        public DbSet<RoleAssignment> RoleAssignments { get; set; }
+        public DbSet<AssignmentExclusion> AssignmentExclusions { get; set; }
+        public DbSet<RoleHierarchy> RoleHierarchies { get; set; }
+        public DbSet<RoleConflict> RoleConflicts { get; set; }
 
         //CompanyDbContext
         public DbSet<TenantBase> Tenants { get; set; }
